@@ -1,10 +1,35 @@
+# Python
 venv/
 __pycache__/
 *.pyc
+*.pyo
+
+# Environment
 .env
+
+# Data
 data/raw/
 data/processed/
+
+# Models
 *.pt
 *.pth
 *.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
+
+# Node
 node_modules/
+
+# VS Code
+.vscode/
+
+# Mac/Linux temp
+*.swp

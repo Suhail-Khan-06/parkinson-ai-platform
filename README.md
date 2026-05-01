@@ -1,64 +1,94 @@
 # Parkinson AI Platform
 
-AI-powered multimodal system for Parkinson’s disease detection using:
+AI-powered multimodal system for Parkinson’s disease detection.
 
-- Voice (XGBoost)
-- Spiral drawings (EfficientNet CNN)
-- DATScan imaging (ResNet50 CNN)
+## 🚀 Features
 
-## Tech Stack
+- 🎤 Voice Analysis (XGBoost)
+- ✏️ Spiral Drawing Classification (EfficientNet CNN)
+- 🧠 DATScan Brain Imaging (ResNet50 CNN)
+- 🔗 Multimodal Fusion Engine
+- 📊 Risk Scoring + Assistance System
+
+---
+
+## 🧱 Tech Stack
 
 - Python, PyTorch
-- FastAPI
-- React
-- PostgreSQL
-- Docker
+- FastAPI (Backend)
+- React (Frontend)
+- PostgreSQL (Database)
+- Docker (Deployment)
 
-## Project Structure
+---
 
-(Explain folders here later)
+## 📁 Project Structure
 
-## Setup
+parkinson-ai-platform/
+│
+├── data/
+│ ├── raw/ # Original datasets (ignored in git)
+│ ├── processed/ # Cleaned datasets
+│
+├── models/
+│ ├── voice_model/
+│ ├── spiral_model/
+│ ├── datscan_model/
+│ ├── fusion_engine/
+│
+├── backend/
+│ ├── api/
+│ ├── services/
+│
+├── frontend/
+├── notebooks/
+├── scripts/
+├── tests/
+├── docker/
+│
+├── requirements.txt
+├── README.md
+├── .gitignore
+
+---
+
+## ⚙️ Setup
 
 ```bash
+git clone https://github.com/YOUR_USERNAME/parkinson-ai-platform.git
+cd parkinson-ai-platform
+
+# Create virtual environment
+python -m venv venv
+Activate virtual environment
+
+Windows:
+venv\Scripts\activate
+
+Mac/Linux:
+source venv/bin/activate
+Install dependencies
 pip install -r requirements.txt
+📥 Dataset
 
----
-
-# 🔹 7. What You Do NOT Do Yet
-
-❌ No frontend
-❌ No Docker
-❌ No fusion
-❌ No DB
-
-👉 First goal: **Train ONE working model (voice)**
-
----
-
-# 🔹 8. Immediate Next Action (VERY IMPORTANT)
-
-Download dataset:
-
-👉 UCI Parkinson’s dataset
-Save as:
-
+Download the UCI Parkinson’s dataset and place it here:
 
 data/raw/parkinsons.csv
+🧠 Development Phases
+Voice Model (XGBoost)
+Spiral CNN
+DATScan CNN
+Fusion Engine
+Backend API
+Frontend
+Deployment
+⚠️ Notes
+Raw datasets are not included due to size/privacy
+Models will be saved as .pkl / .pt files
+📌 Status
 
+🚧 Currently building: Voice Detection Model
 
----
-
-# 🔹 9. Mental Model (Important)
-
-You’re not “building a project”
-
-You are building **3 ML products + 1 AI system**
-
-- Voice → MVP
-- Spiral → visual ML
-- DATScan → medical-grade ML
-- Fusion → your differentiator
 
 ---
 ```
