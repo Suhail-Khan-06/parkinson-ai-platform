@@ -5,22 +5,44 @@ import io
 from backend.services.spiral_service import SpiralService
 
 router = APIRouter()
+
+# ==========================================================
+# Lazy-loaded Spiral Service
+# ==========================================================
+
 service = None
+
 
 def get_service():
     global service
+
     if service is None:
         service = SpiralService()
+
     return service
+
+
+# ==========================================================
+# Spiral Prediction Endpoint
+# ==========================================================
 
 @router.post("/predict/spiral")
 async def predict_spiral(file: UploadFile = File(...)):
+    service = get_service()
+
     try:
         image_bytes = await file.read()
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
-        result = spiral_service.predict(image)
+        image = Image.open(
+            io.BytesIO(image_bytes)
+        ).convert("RGB")
+
+        result = service.predict(image)
+
         return result
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
