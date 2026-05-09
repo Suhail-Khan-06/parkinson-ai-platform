@@ -3,8 +3,13 @@ from fastapi import APIRouter, UploadFile, File
 from backend.services.datscan_service import DATScanService
 
 router = APIRouter()
+service = None
 
-service = DATScanService()
+def get_service():
+    global service
+    if service is None:
+        service = DATScanService()
+    return service
 
 
 @router.post("/predict/datscan")

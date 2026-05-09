@@ -4,7 +4,13 @@ from backend.services.voice_service import VoiceService
 import pandas as pd
 
 router = APIRouter()
-voice_service = VoiceService()
+service = None
+
+def get_service():
+    global service
+    if service is None:
+        service = VoiceService()
+    return service
 
 
 # 🔹 JSON prediction

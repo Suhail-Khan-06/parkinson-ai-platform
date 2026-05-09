@@ -1,13 +1,7 @@
 import json
-import tempfile
-import os
-
 from io import BytesIO
 
-from fastapi import APIRouter
-from fastapi import UploadFile
-from fastapi import File
-from fastapi import Form
+from fastapi import APIRouter, UploadFile, File, Form
 from fastapi.responses import FileResponse
 from PIL import Image
 
@@ -19,211 +13,180 @@ from backend.services.fusion_service import FusionService
 
 router = APIRouter()
 
-service = FusionService()
+# ==========================================================
+# Lazy-loaded Fusion Service
+# Prevents Render free-tier memory crash on startup
+# ==========================================================
+
+service = None
 
 
-# =========================================
-# Helper Function
-# =========================================
+def get_service():
+    global service
+
+    if service is None:
+        service = FusionService()
+
+    return service
+
+
+# ==========================================================
+# Helper Function: Load DATScan (PNG/JPG/DICOM)
+# ==========================================================
 
 def load_datscan_image(upload_file: UploadFile):
-
     filename = upload_file.filename.lower()
 
     # -----------------------------------
-    # NORMAL IMAGE
+    # Standard image formats
     # -----------------------------------
-
     if filename.endswith((".png", ".jpg", ".jpeg")):
-
         image = Image.open(
             BytesIO(upload_file.file.read())
         ).convert("RGB")
-
         return image
 
     # -----------------------------------
-    # DICOM
+    # DICOM format
     # -----------------------------------
-
     elif filename.endswith(".dcm"):
-
         dicom = pydicom.dcmread(upload_file.file)
 
         pixel_array = dicom.pixel_array.astype(np.float32)
 
-        # normalize
+        # Normalize to 0–255
         pixel_array -= pixel_array.min()
 
-        pixel_array /= pixel_array.max()
+        if pixel_array.max() > 0:
+            pixel_array /= pixel_array.max()
 
         pixel_array *= 255.0
-
         pixel_array = pixel_array.astype(np.uint8)
 
-        image = Image.fromarray(pixel_array)
-
-        image = image.convert("RGB")
+        image = Image.fromarray(pixel_array).convert("RGB")
 
         return image
 
     # -----------------------------------
-    # UNSUPPORTED
+    # Unsupported format
     # -----------------------------------
-
     else:
-
         raise ValueError(
-            "Unsupported DATSCAN format. Use PNG/JPG/DICOM."
+            "Unsupported DATScan format. Use PNG, JPG, JPEG, or DICOM."
         )
 
 
-# =========================================
-# PREDICTION ENDPOINT
-# =========================================
+# ==========================================================
+# Multimodal Prediction Endpoint
+# ==========================================================
 
 @router.post("/predict/fusion")
 async def predict_fusion(
-
     voice_data: str = Form(...),
-
     spiral_file: UploadFile = File(...),
-
     datscan_file: UploadFile = File(...)
 ):
+    # Lazy-load model only when endpoint is called
+    service = get_service()
 
     try:
-
         # -----------------------------------
-        # PARSE VOICE JSON
+        # Parse voice JSON
         # -----------------------------------
-
         voice_features = json.loads(voice_data)
 
         # -----------------------------------
-        # LOAD SPIRAL IMAGE
+        # Load spiral image
         # -----------------------------------
-
         spiral_image = Image.open(
             BytesIO(await spiral_file.read())
         ).convert("RGB")
 
         # -----------------------------------
-        # LOAD DATSCAN
+        # Load DATScan
         # -----------------------------------
-
-        datscan_image = load_datscan_image(
-            datscan_file
-        )
+        datscan_image = load_datscan_image(datscan_file)
 
         # -----------------------------------
-        # RUN FUSION MODEL
+        # Run multimodal fusion
         # -----------------------------------
-
         result = service.predict(
-
             voice_features,
-
             spiral_image,
-
             datscan_image
         )
 
         return result
 
     except Exception as e:
-
         return {
             "success": False,
             "error": str(e)
         }
 
 
-# =========================================
-# PDF REPORT ENDPOINT
-# =========================================
+# ==========================================================
+# PDF Report Endpoint
+# ==========================================================
 
 @router.post("/fusion/report")
 async def generate_fusion_report(
-
     voice_data: str = Form(...),
-
     spiral_file: UploadFile = File(...),
-
     datscan_file: UploadFile = File(...)
 ):
+    # Lazy-load model only when endpoint is called
+    service = get_service()
 
     try:
-
         # -----------------------------------
-        # PARSE VOICE JSON
+        # Parse voice JSON
         # -----------------------------------
-
         voice_features = json.loads(voice_data)
 
         # -----------------------------------
-        # LOAD SPIRAL IMAGE
+        # Load spiral image
         # -----------------------------------
-
         spiral_image = Image.open(
             BytesIO(await spiral_file.read())
         ).convert("RGB")
 
         # -----------------------------------
-        # LOAD DATSCAN
+        # Load DATScan
         # -----------------------------------
-
-        datscan_image = load_datscan_image(
-            datscan_file
-        )
+        datscan_image = load_datscan_image(datscan_file)
 
         # -----------------------------------
-        # RUN PREDICTION
+        # Run prediction
         # -----------------------------------
-
         result = service.predict(
-
             voice_features,
-
             spiral_image,
-
             datscan_image
         )
 
         # -----------------------------------
-        # GENERATE PDF
+        # Generate PDF report
         # -----------------------------------
-
         pdf_path = generate_report(
-
             fusion_result=result["fusion_result"],
-
             voice_result=result["voice_result"],
-
             spiral_result=result["spiral_result"],
-
             datscan_result=result["datscan_result"],
-
             explanation=result["explanation"],
-
             output_path="parkinson_report.pdf"
         )
 
         # -----------------------------------
-        # RETURN PDF
+        # Return PDF file
         # -----------------------------------
-
         return FileResponse(
-
             pdf_path,
-
             media_type="application/pdf",
-
             filename="parkinson_report.pdf"
         )
 
     except Exception as e:
-
         return {
             "success": False,
             "error": str(e)

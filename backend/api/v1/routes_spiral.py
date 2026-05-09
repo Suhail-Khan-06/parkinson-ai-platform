@@ -5,8 +5,13 @@ import io
 from backend.services.spiral_service import SpiralService
 
 router = APIRouter()
-spiral_service = SpiralService()
+service = None
 
+def get_service():
+    global service
+    if service is None:
+        service = SpiralService()
+    return service
 
 @router.post("/predict/spiral")
 async def predict_spiral(file: UploadFile = File(...)):
