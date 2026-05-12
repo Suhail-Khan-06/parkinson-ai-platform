@@ -1,5 +1,6 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://127.0.0.1:8000";
 
 export async function runFusionPrediction(
   voiceData: string,
@@ -13,7 +14,7 @@ export async function runFusionPrediction(
   formData.append("datscan_file", datscanFile);
 
   const response = await fetch(
-    `${API_BASE_URL}/api/v1/predict/fusion`,
+    `${API_URL}/api/v1/predict/fusion`,
     {
       method: "POST",
       body: formData,
@@ -40,7 +41,7 @@ export async function downloadFusionReport(
   formData.append("datscan_file", datscanFile);
 
   const response = await fetch(
-    `${API_BASE_URL}/api/v1/fusion/report`,
+    `${API_URL}/api/v1/fusion/report`,
     {
       method: "POST",
       body: formData,
