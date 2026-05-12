@@ -284,19 +284,19 @@ The platform automatically generates a professional diagnostic report containing
 
 ### Landing Page
 
-_Add screenshot here_
+<img width="1920" height="1080" alt="LP" src="https://github.com/user-attachments/assets/6c82f615-7f9e-4e74-a1fb-94fbca9bf6b2" />
 
 ### Dashboard
 
-_Add screenshot here_
+<img width="1920" height="1080" alt="DB1" src="https://github.com/user-attachments/assets/4dff13a2-c4d6-4497-8dea-e9e8aa5d1f1f" />
 
 ### Prediction Results
 
-_Add screenshot here_
+<img width="1920" height="1080" alt="R" src="https://github.com/user-attachments/assets/ec5b9110-f217-49ac-87dd-e6e5840f99c7" />
 
 ### PDF Diagnostic Report
 
-_Add screenshot here_
+<img width="1920" height="1080" alt="Screenshot (1201)" src="https://github.com/user-attachments/assets/632ba50f-786f-4fc9-bfee-6e613b3f3fe9" />
 
 ---
 
