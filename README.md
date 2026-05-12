@@ -36,10 +36,6 @@ These independent predictions are fused using a custom multimodal decision engin
 
 https://parkinson-ai-platform.vercel.app
 
-### ⚙️ Backend API
-
-https://parkinson-ai-backend.onrender.com
-
 ### 📚 API Documentation
 
 https://parkinson-ai-backend.onrender.com/docs
